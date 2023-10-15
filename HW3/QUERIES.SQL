@@ -80,3 +80,15 @@ WITH SalesByMerchantAndCategory AS
 SELECT Merchant, category, Sales FROM SalesByMerchantAndCategory AS SBMC
 WHERE Sales = (SELECT MAX(Sales) FROM SalesByMerchantAndCategory WHERE Merchant=SBMC.Merchant);
 
+/*Query 10: For each company find out which customers have spent the least and most ammounts */
+WITH SalesByMerchantAndCustomer AS
+	(SELECT mid, cid, merchants.name AS merchant_name, customers.fullname AS customer_name, SUM(sell.price) AS total_spent FROM place
+		INNER JOIN customers USING(cid)
+        INNER JOIN contain USING(oid)
+			INNER JOIN sell USING(pid)
+				INNER JOIN merchants USING(mid)
+	GROUP BY mid, cid)
+SELECT * FROM SalesByMerchantAndCustomer AS SBMC
+WHERE total_spent = (SELECT MIN(total_spent) FROM SalesByMerchantAndCustomer WHERE mid=SBMC.mid)
+	OR total_spent = (SELECT MAX(total_spent) FROM SalesByMerchantAndCustomer WHERE mid=SBMC.mid)
+ORDER BY merchant_name, total_spent;
