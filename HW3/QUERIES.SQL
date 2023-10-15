@@ -5,7 +5,7 @@ SELECT products.name, merchants.name AS "merchant" FROM products
 	WHERE sell.quantity_available=0;
 
 /* Query 2: List names and descriptions of products no longer sold */
-SELECT pid,description FROM products 
+SELECT name,description FROM products 
 	WHERE products.pid NOT IN 
 		(SELECT DISTINCT products.pid FROM products INNER JOIN sell USING(pid));
 
